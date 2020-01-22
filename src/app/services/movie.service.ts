@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 
 import { GLOBAL } from './globalConfiguration';
+import { Movie } from '../models/movie.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,19 @@ export class MovieService {
     this.url = GLOBAL.url;
   }
 
-  public getAllMovies() {
-    return this.http.get(this.url + 'movies')
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      console.error('Server error:', error.error.message);
+    } else {
+      console.error(`Backend error code: ${error.status}. Body content: ${error.error}`);
+    }
+    return throwError(`Server error: ${error.message}. Please try again later.`);
+  };
+
+  public getAllMovies(): Observable<HttpResponse<Movie[]>> {
+    return this.http.get<Movie[]>(this.url + 'moviesa', { observe: 'response' }).pipe(
+      retry(2),
+      catchError(this.handleError)
+    )
   }
 }
