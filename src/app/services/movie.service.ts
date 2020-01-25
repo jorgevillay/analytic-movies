@@ -16,6 +16,7 @@ export class MovieService {
     this.url = GLOBAL.url;
   }
 
+  // Error control to display message.
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       console.error('Server error:', error.error.message);
@@ -26,7 +27,7 @@ export class MovieService {
   };
 
   public getAllMovies(): Observable<HttpResponse<Movie[]>> {
-    return this.http.get<Movie[]>(this.url + 'moviesa', { observe: 'response' }).pipe(
+    return this.http.get<Movie[]>(this.url + 'movies', { observe: 'response' }).pipe(
       retry(2),
       catchError(this.handleError)
     )

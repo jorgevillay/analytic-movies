@@ -10,6 +10,7 @@ import { MovieService } from '../services/movie.service';
 })
 export class DashboardComponent implements OnInit {
   public allMovies: Movie[];
+  // Object to control request status and error message (if applies).
   public movieRequest: { error: boolean, message: string };
 
   constructor(private movieService: MovieService) {
@@ -19,7 +20,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.movieService.getAllMovies().subscribe(response => {
-      this.allMovies = response.body;
+      response.body.forEach(movie => {
+        // Validation for possible empty objects.
+        if (movie.id) this.allMovies.push(movie);
+      });
     }, err => {
       this.movieRequest.error = true;
       this.movieRequest.message = err;

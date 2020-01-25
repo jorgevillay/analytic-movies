@@ -1,8 +1,20 @@
-<h2>Available movies:</h2>
+<h3>Available movies:</h3>
 <div *ngIf="!movieRequest.error">
-    <ul>
-        <li *ngFor="let movie of allMovies">{{movie.name}}</li>
-    </ul>
+    <div class="row">
+        <div class="col-sm-3 mb-3" *ngFor="let movie of allMovies">
+            <div class="card cover-container">
+                <img class="card-img cover-image" src="{{movie.cover}}" alt="{{movie.name}}">
+                <div class="cover-content">
+                    <div class="cover-text">
+                        <h6>{{movie.name}}</h6>
+                        <span class="badge badge-light">{{movie.genre}}</span>
+                        <br>
+                        <span class="badge badge-dark">{{movie.score}}/10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div *ngIf="movieRequest.error">
     <div class="alert alert-danger" role="alert">
