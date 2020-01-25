@@ -1,19 +1,28 @@
 <h3>Available movies:</h3>
 <div *ngIf="!movieRequest.error">
-    <div class="row">
-        <div class="col-sm-3 mb-3" *ngFor="let movie of allMovies">
-            <div class="card cover-container">
-                <img class="card-img cover-image" src="{{movie.cover}}" alt="{{movie.name}}">
-                <div class="cover-content">
-                    <div class="cover-text">
-                        <h6>{{movie.name}}</h6>
-                        <span class="badge badge-light">{{movie.genre}}</span>
-                        <br>
-                        <span class="badge badge-dark">{{movie.score}}/10</span>
+    <div class="d-flex justify-content-center" *ngIf="!loadingFinished">
+        <div class="spinner-border text-primary m-5" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div *ngIf="loadingFinished">
+        <div class="row">
+            <div class="col-sm-3 mb-3" *ngFor="let movie of pageMovies">
+                <div class="card cover-container">
+                    <img class="card-img cover-image" src="{{movie.cover}}" alt="{{movie.name}}">
+                    <div class="cover-content">
+                        <div class="cover-text">
+                            <h6>{{movie.name}}</h6>
+                            <span class="badge badge-light">{{movie.genre}}</span>
+                            <br>
+                            <span class="badge badge-dark">{{movie.score}}/10</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <ngb-pagination [collectionSize]="allMovies.length" [pageSize]="itemsPerPage" [(page)]="page" [maxSize]="5"
+            [rotate]="false" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
     </div>
 </div>
 <div *ngIf="movieRequest.error">

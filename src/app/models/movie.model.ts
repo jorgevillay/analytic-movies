@@ -4,6 +4,6 @@ export class Movie {
         public name: string,
         public genre: string,
         public score: string,
-        public cover: string,
+        public cover: string
     ) { }
 }
