@@ -7,7 +7,18 @@
     </div>
     <div *ngIf="loadingFinished">
         <div class="row">
-            <div class="col-sm-3 mb-3" *ngFor="let movie of pageMovies">
+            <div class="border rounded bg-light m-3 p-3" *ngFor="let genre of genresList" (click)="loadGenreMovies(genre)">
+                <fa-layers [fixedWidth]="true" size="5x">
+                    <fa-icon [icon]="['fas', utilitiesService.getGenreIcon(genre.value)]"
+                        [ngClass]="{'text-secondary': !genre.selected, 'text-primary': genre.selected}"></fa-icon>
+                    <fa-layers-counter *ngIf="genre.selected" content="{{genreMovies.length}}"
+                        [styles]="{'color': 'gray', 'background': 'white'}"></fa-layers-counter>
+                </fa-layers>
+                <h6 class="text-center m-0" [ngClass]="{'text-secondary': !genre.selected, 'text-primary': genre.selected}">{{genre.value}}</h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 mb-3" *ngFor="let movie of pageMovies" [routerLink]="['/movie', movie.id]">
                 <div class="card cover-container">
                     <img class="card-img cover-image" src="{{movie.cover}}" alt="{{movie.name}}">
                     <div class="cover-content">
@@ -21,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <ngb-pagination [collectionSize]="allMovies.length" [pageSize]="itemsPerPage" [(page)]="page" [maxSize]="5"
+        <ngb-pagination [collectionSize]="genreMovies.length" [pageSize]="itemsPerPage" [(page)]="page" [maxSize]="5"
             [rotate]="false" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
     </div>
 </div>

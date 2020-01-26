@@ -32,4 +32,11 @@ export class MovieService {
       catchError(this.handleError)
     )
   }
+
+  public getMovieByID(id: string): Observable<HttpResponse<Movie>> {
+    return this.http.get<Movie>(this.url + 'movies/' + id, { observe: 'response' }).pipe(
+      retry(2),
+      catchError(this.handleError)
+    )
+  }
 }
