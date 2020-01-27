@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription }   from 'rxjs';
 
 import { Movie } from '../models/movie.model';
 import { MovieService } from '../services/movie.service';
 import { UtilitiesService } from '../services/utilities.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +13,8 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 export class DashboardComponent implements OnInit {
   public allMovies: Movie[];
   public loadingFinished: boolean;
+  // Movie search variables.
+  public movieSubscription: Subscription;
   // Genre filtering variables.
   public genresList: { value: string, selected: boolean }[];
   public genreMovies: Movie[];
@@ -27,12 +29,15 @@ export class DashboardComponent implements OnInit {
   constructor(private movieService: MovieService,
     private utilitiesService: UtilitiesService) {
     this.allMovies = [];
-    // Genres listo to filter.
+    // Genres list to filter.
     this.genresList = [{ value: 'All', selected: true }];
     this.loadingFinished = false;
     this.movieRequest = { error: false, message: null };
     this.itemsPerPage = 8;
     this.page = 1;
+    this.movieSubscription = movieService.filerValue$.subscribe(response => {
+      this.loadFilteredMovies(response);
+    });
   }
 
   ngOnInit() {
@@ -52,6 +57,17 @@ export class DashboardComponent implements OnInit {
       this.movieRequest.error = true;
       this.movieRequest.message = err;
     });
+  }
+
+  // Prevent memory leak when component is destroyed
+  ngOnDestroy() {
+    this.movieSubscription.unsubscribe();
+  }
+
+  loadFilteredMovies(filterValue: string) {
+    if (filterValue.length == 0) this.genreMovies = this.allMovies;
+    else this.genreMovies = this.allMovies.filter(movie => { return movie.name.toLocaleLowerCase().includes(filterValue.toLocaleLowerCase()) });
+    this.loadPageMovies(1);
   }
 
   loadGenreMovies(genre: { value: string, selected: boolean }) {

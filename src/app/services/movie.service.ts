@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 import { GLOBAL } from './globalConfiguration';
@@ -11,9 +11,17 @@ import { Movie } from '../models/movie.model';
 })
 export class MovieService {
   public url: string;
+  private filterValueSource = new Subject<string>();
 
   constructor(private http: HttpClient) {
     this.url = GLOBAL.url;
+  }
+
+  // Movie filter value communication service.
+  filerValue$ = this.filterValueSource.asObservable();
+
+  updateFilterValue(value: string) {
+    this.filterValueSource.next(value);
   }
 
   // Error control to display message.
