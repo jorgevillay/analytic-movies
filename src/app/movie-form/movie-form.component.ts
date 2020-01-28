@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Movie } from '../models/movie.model';
@@ -11,6 +12,7 @@ import { MovieService } from '../services/movie.service';
   styleUrls: ['./movie-form.component.css']
 })
 export class MovieFormComponent implements OnInit {
+  public loadingFinished: boolean;
   public proccessRunning: boolean;
   public genresList: string[];
   // Movie form variables.
@@ -22,7 +24,9 @@ export class MovieFormComponent implements OnInit {
   @Input() operation: string;
 
   constructor(private modalService: NgbModal,
+    private router: Router,
     private movieService: MovieService) {
+    this.loadingFinished = false;
     this.proccessRunning = false;
     this.movieRequest = { error: false, message: null };
     this.genresList = ['Acción', 'Drama', 'Suspenso', 'Animación', 'Ciencia ficción', 'Terror', 'Infatil'];
@@ -44,11 +48,12 @@ export class MovieFormComponent implements OnInit {
           score: response.body.score,
           cover: response.body.cover
         });
+        this.loadingFinished = true;
       }, err => {
         this.movieRequest.error = true;
         this.movieRequest.message = err;
       });
-    }
+    } else this.loadingFinished = true;
   }
 
   get formValidations() { return this.movieForm.controls }
@@ -69,11 +74,12 @@ export class MovieFormComponent implements OnInit {
       });
     }
     else {
-      var newMovie = new Movie(Math.random().toString(36).substring(7), this.movieForm.value.name, this.movieForm.value.genre, this.movieForm.value.score, this.movieForm.value.cover);
+      var newMovie = new Movie(Math.random().toString(20).slice(2), this.movieForm.value.name, this.movieForm.value.genre, this.movieForm.value.score, this.movieForm.value.cover);
       this.movieService.createMovie(newMovie).subscribe(response => {
         this.proccessRunning = false;
         this.movieService.setRequestResult(true, () => {
           this.onResetForm();
+          this.router.navigate(['/dashboard']);
         });
       }, err => {
         this.proccessRunning = false;

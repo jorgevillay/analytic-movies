@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription }   from 'rxjs';
 
 import { Movie } from '../models/movie.model';
+import { LoginService } from '../services/login.service';
 import { MovieService } from '../services/movie.service';
 import { UtilitiesService } from '../services/utilities.service';
 
@@ -10,7 +12,7 @@ import { UtilitiesService } from '../services/utilities.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public allMovies: Movie[];
   public loadingFinished: boolean;
   // Movie subscription variables.
@@ -27,7 +29,9 @@ export class DashboardComponent implements OnInit {
   public page: number;
   public previousPage: number;
 
-  constructor(private movieService: MovieService,
+  constructor(private router: Router,
+    private loginService: LoginService,
+    private movieService: MovieService,
     private utilitiesService: UtilitiesService) {
     this.allMovies = [];
     // Genres list to filter.
@@ -37,31 +41,33 @@ export class DashboardComponent implements OnInit {
     this.itemsPerPage = 8;
     this.page = 1;
     // Movie subscription control.
-    this.movieFilterSubscription = movieService.filerValue$.subscribe(response => {
+    this.movieFilterSubscription = this.movieService.filerValue$.subscribe(response => {
       this.loadFilteredMovies(response);
     });
-    this.movieRequestSubscription = movieService.requestResult$.subscribe(response => {
+    this.movieRequestSubscription = this.movieService.requestResult$.subscribe(response => {
       if (response) this.realoadMoviesList();
     });
   }
 
   ngOnInit() {
-    this.movieService.getAllMovies().subscribe(response => {
-      response.body.forEach(movie => {
-        // Validation for possible empty objects.
-        if (movie.id) {
-          this.allMovies.push(movie);
-          if (!this.genresList.find(genre => { return genre.value == movie.genre })) this.genresList.push({ value: movie.genre, selected: false });
-        }
+    if (this.loginService.getLoginInformation()) {
+      this.movieService.getAllMovies().subscribe(response => {
+        response.body.forEach(movie => {
+          // Validation for possible empty objects.
+          if (movie.id) {
+            this.allMovies.push(movie);
+            if (!this.genresList.find(genre => { return genre.value == movie.genre })) this.genresList.push({ value: movie.genre, selected: false });
+          }
+        });
+        this.genreMovies = this.allMovies;
+        this.loadPageMovies(this.page);
+        // Loading spinner control.
+        this.loadingFinished = true;
+      }, err => {
+        this.movieRequest.error = true;
+        this.movieRequest.message = err;
       });
-      this.genreMovies = this.allMovies;
-      this.loadPageMovies(this.page);
-      // Loading spinner control.
-      this.loadingFinished = true;
-    }, err => {
-      this.movieRequest.error = true;
-      this.movieRequest.message = err;
-    });
+    } else this.router.navigate(['/login']);
   }
 
   // Prevent memory leak when component is destroyed

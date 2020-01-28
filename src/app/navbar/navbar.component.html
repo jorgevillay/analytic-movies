@@ -4,16 +4,28 @@
         Movies
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
-        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation" *ngIf="showLoginOptions">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarContent">
+    <div class="collapse navbar-collapse" id="navbarContent" *ngIf="showLoginOptions">
         <button class="btn btn-primary btn-sm mr-auto" type="button" (click)="openModal(movie)">Add new movie</button>
-        <form class="form-inline my-2 my-lg-0" (ngSubmit)="updateFilterValue(filterValue)">
+        <form class="form-inline my-2 my-lg-0 mr-3" (ngSubmit)="updateFilterValue(filterValue)">
             <input class="form-control mr-sm-2" [(ngModel)]="filterValue" [ngModelOptions]="{standalone: true}"
                 type="search" placeholder="Search by name" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="loginDropdown"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <fa-icon class="mr-1" [icon]="['fas', 'user']"></fa-icon>
+                    <span class="text-capitalize">{{loginInformation.username}}</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="loginDropdown">
+                    <a class="dropdown-item pointer-cursor" (click)="logout()">Logout</a>
+                </div>
+            </li>
+        </ul>
     </div>
 </nav>
 <div class="container-fluid mt-80">

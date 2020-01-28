@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription }   from 'rxjs';
 
 import { Movie } from '../models/movie.model';
+import { LoginService } from '../services/login.service';
 import { MovieService } from '../services/movie.service';
 import { UtilitiesService } from '../services/utilities.service';
 
@@ -12,7 +13,7 @@ import { UtilitiesService } from '../services/utilities.service';
   templateUrl: './single-movie.component.html',
   styleUrls: ['./single-movie.component.css']
 })
-export class SingleMovieComponent implements OnInit {
+export class SingleMovieComponent implements OnInit, OnDestroy {
   public movieID: string;
   public selectedMovie: Movie;
   public loadingFinished: boolean;
@@ -24,12 +25,14 @@ export class SingleMovieComponent implements OnInit {
 
   constructor(private router: Router,
     private route: ActivatedRoute,
+    private loginService: LoginService,
     private movieService: MovieService,
     private utilitiesService: UtilitiesService,
     private modalService: NgbModal) {
     this.movieRequest = { error: false, message: null };
     this.proccessRunning = false;
     this.loadingFinished = false;
+    // Movie subscription control.
     this.movieRequestSubscription = movieService.requestResult$.subscribe(response => {
       if (response) {
         this.loadingFinished = false;
@@ -39,15 +42,17 @@ export class SingleMovieComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.movieID = this.route.snapshot.paramMap.get('id');
-    this.movieService.getMovieByID(this.movieID).subscribe(response => {
-      this.selectedMovie = response.body;
-      // Loading spinner control.
-      this.loadingFinished = true;
-    }, err => {
-      this.movieRequest.error = true;
-      this.movieRequest.message = err;
-    });
+    if (this.loginService.getLoginInformation()) {
+      this.movieID = this.route.snapshot.paramMap.get('id');
+      this.movieService.getMovieByID(this.movieID).subscribe(response => {
+        this.selectedMovie = response.body;
+        // Loading spinner control.
+        this.loadingFinished = true;
+      }, err => {
+        this.movieRequest.error = true;
+        this.movieRequest.message = err;
+      });
+    } else this.router.navigate(['/login']);
   }
 
   // Prevent memory leak when component is destroyed

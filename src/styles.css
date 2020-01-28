@@ -15,3 +15,8 @@
     position: absolute;
     bottom: 0px;
 }
+
+/* Effects */
+.pointer-cursor {
+    cursor: pointer;
+}
