@@ -1,4 +1,3 @@
-<h3>Available movies:</h3>
 <div *ngIf="!movieRequest.error">
     <div class="d-flex justify-content-center" *ngIf="!loadingFinished">
         <div class="spinner-border text-primary m-5" role="status">
@@ -6,15 +5,17 @@
         </div>
     </div>
     <div *ngIf="loadingFinished">
-        <div class="row">
-            <div class="border rounded bg-light m-3 p-3" *ngFor="let genre of genresList" (click)="loadGenreMovies(genre)">
+        <div class="row center-list">
+            <div class="border rounded bg-light m-3 p-3" *ngFor="let genre of genresList"
+                (click)="loadGenreMovies(genre)">
                 <fa-layers [fixedWidth]="true" size="3x">
                     <fa-icon [icon]="['fas', utilitiesService.getGenreIcon(genre.value)]"
                         [ngClass]="{'text-secondary': !genre.selected, 'text-primary': genre.selected}"></fa-icon>
                     <fa-layers-counter *ngIf="genre.selected" content="{{genreMovies.length}}"
-                        [styles]="{'color': 'gray', 'background': 'white'}"></fa-layers-counter>
+                        [styles]="{'color': 'white', 'background': '#a9cce3'}"></fa-layers-counter>
                 </fa-layers>
-                <h6 class="text-center m-0" [ngClass]="{'text-secondary': !genre.selected, 'text-primary': genre.selected}">{{genre.value}}</h6>
+                <h6 class="text-center m-0"
+                    [ngClass]="{'text-secondary': !genre.selected, 'text-primary': genre.selected}">{{genre.value}}</h6>
             </div>
         </div>
         <div class="row">
@@ -32,8 +33,10 @@
                 </div>
             </div>
         </div>
-        <ngb-pagination [collectionSize]="genreMovies.length" [pageSize]="itemsPerPage" [(page)]="page" [maxSize]="5"
-            [rotate]="false" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+        <div class="row center-list">
+            <ngb-pagination [collectionSize]="genreMovies.length" [pageSize]="itemsPerPage" [(page)]="page"
+                [maxSize]="5" [rotate]="false" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+        </div>
     </div>
 </div>
 <div *ngIf="movieRequest.error">

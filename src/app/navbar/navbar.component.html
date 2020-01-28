@@ -20,5 +20,5 @@
     <router-outlet></router-outlet>
 </div>
 <ng-template #movie let-modal>
-    <app-movie-form></app-movie-form>
+    <app-movie-form [movie]="null" [operation]="'create'"></app-movie-form>
 </ng-template>

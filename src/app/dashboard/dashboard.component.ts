@@ -41,10 +41,7 @@ export class DashboardComponent implements OnInit {
       this.loadFilteredMovies(response);
     });
     this.movieRequestSubscription = movieService.requestResult$.subscribe(response => {
-      if (response) {
-        this.allMovies = [];
-        this.ngOnInit();
-      }
+      if (response) this.realoadMoviesList();
     });
   }
 
@@ -71,6 +68,18 @@ export class DashboardComponent implements OnInit {
   ngOnDestroy() {
     this.movieFilterSubscription.unsubscribe();
     this.movieRequestSubscription.unsubscribe();
+  }
+
+  realoadMoviesList() {
+    this.allMovies = [];
+    this.loadingFinished = false;
+    this.movieRequest = { error: false, message: null };
+    this.page = 1;
+    this.ngOnInit();
+    this.genresList.forEach(genre => {
+      if (genre.value == 'All') genre.selected = true;
+      else genre.selected = false;
+    });
   }
 
   loadFilteredMovies(filterValue: string) {

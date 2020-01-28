@@ -62,4 +62,16 @@ export class MovieService {
       catchError(this.handleError)
     )
   }
+
+  public updateMovie(modifiedMovie: Movie): Observable<HttpResponse<Movie>> {
+    return this.http.put<Movie>(this.url + 'movies/' + modifiedMovie.id, modifiedMovie, { observe: 'response' }).pipe(
+      catchError(this.handleError)
+    )
+  }
+
+  public deleteMovie(movieID: string): Observable<HttpResponse<Movie>> {
+    return this.http.delete<Movie>(this.url + 'movies/' + movieID, { observe: 'response' }).pipe(
+      catchError(this.handleError)
+    )
+  }
 }

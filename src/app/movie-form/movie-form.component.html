@@ -1,6 +1,6 @@
 <form [formGroup]="movieForm" (ngSubmit)="onSubmitForm()">
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <h4 class="modal-title text-capitalize" id="modal-basic-title">{{operation}} Movie</h4>
     </div>
     <div class="modal-body">
         <div class="form-group mb-0" *ngIf="movieRequest.error">

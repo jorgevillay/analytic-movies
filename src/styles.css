@@ -4,3 +4,14 @@
 .mt-80 {
     margin-top: 80px;
 }
+
+/* Position */
+.center-list {
+    display: flex;
+    justify-content: center;
+}
+
+.bottom-object {
+    position: absolute;
+    bottom: 0px;
+}

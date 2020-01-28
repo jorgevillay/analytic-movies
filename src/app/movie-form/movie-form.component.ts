@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -17,6 +17,9 @@ export class MovieFormComponent implements OnInit {
   public movieForm: FormGroup;
   // Object to control request status and error message (if applies).
   public movieRequest: { error: boolean, message: string };
+  // Modal configuration.
+  @Input() movie: string;
+  @Input() operation: string;
 
   constructor(private modalService: NgbModal,
     private movieService: MovieService) {
@@ -33,23 +36,51 @@ export class MovieFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.movie) {
+      this.movieService.getMovieByID(this.movie).subscribe(response => {
+        this.movieForm.setValue({
+          name: response.body.name,
+          genre: response.body.genre,
+          score: response.body.score,
+          cover: response.body.cover
+        });
+      }, err => {
+        this.movieRequest.error = true;
+        this.movieRequest.message = err;
+      });
+    }
   }
 
   get formValidations() { return this.movieForm.controls }
 
   onSubmitForm() {
     this.proccessRunning = true;
-    var newMovie = new Movie(Math.random().toString(36).substring(7), this.movieForm.value.name, this.movieForm.value.genre, this.movieForm.value.score, this.movieForm.value.cover);
-    this.movieService.createMovie(newMovie).subscribe(response => {
-      this.proccessRunning = false;
-      this.movieService.setRequestResult(true, () => {
-        this.onResetForm();
+    if (this.movie) {
+      var newMovie = new Movie(this.movie, this.movieForm.value.name, this.movieForm.value.genre, this.movieForm.value.score, this.movieForm.value.cover);
+      this.movieService.updateMovie(newMovie).subscribe(response => {
+        this.proccessRunning = false;
+        this.movieService.setRequestResult(true, () => {
+          this.onResetForm();
+        });
+      }, err => {
+        this.proccessRunning = false;
+        this.movieRequest.error = true;
+        this.movieRequest.message = err;
       });
-    }, err => {
-      this.proccessRunning = false;
-      this.movieRequest.error = true;
-      this.movieRequest.message = err;
-    });
+    }
+    else {
+      var newMovie = new Movie(Math.random().toString(36).substring(7), this.movieForm.value.name, this.movieForm.value.genre, this.movieForm.value.score, this.movieForm.value.cover);
+      this.movieService.createMovie(newMovie).subscribe(response => {
+        this.proccessRunning = false;
+        this.movieService.setRequestResult(true, () => {
+          this.onResetForm();
+        });
+      }, err => {
+        this.proccessRunning = false;
+        this.movieRequest.error = true;
+        this.movieRequest.message = err;
+      });
+    }
   }
 
   onResetForm() {
