@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { LoginService } from '../services/login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   public proccessRunning: boolean;
   // Login form variables.
   public loginForm: FormGroup;
@@ -25,6 +25,10 @@ export class LoginComponent {
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required)
     });
+  }
+
+  ngOnInit() {
+    if (this.loginService.getLoginInformation()) this.router.navigate(['/dashboard']);
   }
 
   onSubmitForm() {
