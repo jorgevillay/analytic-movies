@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { MovieService } from '../services/movie.service';
 
@@ -11,7 +12,8 @@ import { MovieService } from '../services/movie.service';
 export class NavbarComponent implements OnInit {
   public filterValue: string;
 
-  constructor(private movieService: MovieService) {
+  constructor(private movieService: MovieService,
+    private modalService: NgbModal) {
     this.filterValue = '';
   }
 
@@ -22,4 +24,7 @@ export class NavbarComponent implements OnInit {
     this.movieService.updateFilterValue(value);
   }
 
+  openModal(modalName: any) {
+    this.modalService.open(modalName, { size: 'lg' });
+  }
 }

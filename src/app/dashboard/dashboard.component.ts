@@ -13,8 +13,9 @@ import { UtilitiesService } from '../services/utilities.service';
 export class DashboardComponent implements OnInit {
   public allMovies: Movie[];
   public loadingFinished: boolean;
-  // Movie search variables.
-  public movieSubscription: Subscription;
+  // Movie subscription variables.
+  public movieFilterSubscription: Subscription;
+  public movieRequestSubscription: Subscription;
   // Genre filtering variables.
   public genresList: { value: string, selected: boolean }[];
   public genreMovies: Movie[];
@@ -35,8 +36,15 @@ export class DashboardComponent implements OnInit {
     this.movieRequest = { error: false, message: null };
     this.itemsPerPage = 8;
     this.page = 1;
-    this.movieSubscription = movieService.filerValue$.subscribe(response => {
+    // Movie subscription control.
+    this.movieFilterSubscription = movieService.filerValue$.subscribe(response => {
       this.loadFilteredMovies(response);
+    });
+    this.movieRequestSubscription = movieService.requestResult$.subscribe(response => {
+      if (response) {
+        this.allMovies = [];
+        this.ngOnInit();
+      }
     });
   }
 
@@ -61,7 +69,8 @@ export class DashboardComponent implements OnInit {
 
   // Prevent memory leak when component is destroyed
   ngOnDestroy() {
-    this.movieSubscription.unsubscribe();
+    this.movieFilterSubscription.unsubscribe();
+    this.movieRequestSubscription.unsubscribe();
   }
 
   loadFilteredMovies(filterValue: string) {

@@ -12,6 +12,7 @@ import { Movie } from '../models/movie.model';
 export class MovieService {
   public url: string;
   private filterValueSource = new Subject<string>();
+  private requestResultSource = new Subject<boolean>();
 
   constructor(private http: HttpClient) {
     this.url = GLOBAL.url;
@@ -22,6 +23,14 @@ export class MovieService {
 
   updateFilterValue(value: string) {
     this.filterValueSource.next(value);
+  }
+
+  // Movie request value communication service.
+  requestResult$ = this.requestResultSource.asObservable();
+
+  setRequestResult(value: boolean, callback: any) {
+    this.requestResultSource.next(value);
+    callback();
   }
 
   // Error control to display message.
@@ -44,6 +53,12 @@ export class MovieService {
   public getMovieByID(id: string): Observable<HttpResponse<Movie>> {
     return this.http.get<Movie>(this.url + 'movies/' + id, { observe: 'response' }).pipe(
       retry(2),
+      catchError(this.handleError)
+    )
+  }
+
+  public createMovie(newMovie: Movie): Observable<HttpResponse<Movie>> {
+    return this.http.post<Movie>(this.url + 'movies', newMovie, { observe: 'response' }).pipe(
       catchError(this.handleError)
     )
   }

@@ -2,10 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // Icons.
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faBomb, faTheaterMasks, faRobot, faSpaceShuttle, faGhost, faSnowman, faFilm } from '@fortawesome/free-solid-svg-icons';
+import { faBomb, faTheaterMasks, faUserSecret, faRobot, faSpaceShuttle, faGhost, faSnowman, faFilm } from '@fortawesome/free-solid-svg-icons';
 
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -26,7 +26,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     AppRoutingModule,
     NgbModule,
     FontAwesomeModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [NavbarComponent]
@@ -34,6 +35,6 @@ import { NavbarComponent } from './navbar/navbar.component';
 export class AppModule {
   // Icons added to library for reuse.
   constructor(library: FaIconLibrary) {
-    library.addIcons(faBomb, faTheaterMasks, faRobot, faSpaceShuttle, faGhost, faSnowman, faFilm );
+    library.addIcons(faBomb, faTheaterMasks, faUserSecret, faRobot, faSpaceShuttle, faGhost, faSnowman, faFilm );
   }
 }

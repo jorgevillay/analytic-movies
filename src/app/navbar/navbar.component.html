@@ -8,9 +8,10 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarContent">
-        <button class="btn btn-primary btn-sm mr-auto" type="button">Add new movie</button>
+        <button class="btn btn-primary btn-sm mr-auto" type="button" (click)="openModal(movie)">Add new movie</button>
         <form class="form-inline my-2 my-lg-0" (ngSubmit)="updateFilterValue(filterValue)">
-            <input class="form-control mr-sm-2" [(ngModel)]="filterValue" [ngModelOptions]="{standalone: true}" type="search" placeholder="Search by name" aria-label="Search">
+            <input class="form-control mr-sm-2" [(ngModel)]="filterValue" [ngModelOptions]="{standalone: true}"
+                type="search" placeholder="Search by name" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
@@ -18,3 +19,6 @@
 <div class="container-fluid mt-80">
     <router-outlet></router-outlet>
 </div>
+<ng-template #movie let-modal>
+    <app-movie-form></app-movie-form>
+</ng-template>

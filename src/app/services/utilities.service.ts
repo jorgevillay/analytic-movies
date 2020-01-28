@@ -16,10 +16,13 @@ export class UtilitiesService {
       case 'Drama':
         return 'theater-masks'
         break;
-      case 'Animada':
+      case 'Suspenso':
+          return 'user-secret'
+          break;
+      case 'Animación':
         return 'robot'
         break;
-      case 'Fantasia':
+      case 'Ciencia ficción':
         return 'space-shuttle'
         break;
       case 'Terror':
